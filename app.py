@@ -1,9 +1,19 @@
 import streamlit as st
+import requests
 
 st.set_page_config(
     page_title="NHL Predictor",
     page_icon="🏒",
     layout="wide"
+)
+
+# Obtener equipos desde la API NHL
+url = "https://api-web.nhle.com/v1/standings/now"
+response = requests.get(url)
+data = response.json()
+
+teams = sorted(
+    [team["teamName"]["default"] for team in data["standings"]]
 )
 
 st.title("🏒 NHL Predictor")
@@ -17,15 +27,15 @@ st.write("Bienvenido al sistema de predicción de partidos de NHL.")
 col1, col2 = st.columns(2)
 
 with col1:
-    st.selectbox(
+    local = st.selectbox(
         "Equipo Local",
-        ["Boston Bruins", "Colorado Avalanche", "Dallas Stars"]
+        teams
     )
 
 with col2:
-    st.selectbox(
+    visitante = st.selectbox(
         "Equipo Visitante",
-        ["Edmonton Oilers", "Vegas Golden Knights", "New York Rangers"]
+        teams
     )
 
 st.button("Generar Predicción")
